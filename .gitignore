@@ -1,7 +1,6 @@
 # Personales
 *.back
 *.swp
-main.c
 # Prerequisites
 *.d
 
