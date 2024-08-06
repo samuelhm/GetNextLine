@@ -1,9 +1,9 @@
 # Personales
 *.back
 *.swp
-main.c
-a.out
-a.txt
+*main.c
+*.out
+*.txt
 # Prerequisites
 *.d
 

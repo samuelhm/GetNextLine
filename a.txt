@@ -1,4 +1,0 @@
-hola
-esto es un archivo
-con multiples lineas
-y esta es la ultima
