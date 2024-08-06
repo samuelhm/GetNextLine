@@ -11,18 +11,17 @@ int main(int argc, char *argv[])
 		return (1);
 	}
 	char *texto = get_next_line(fd);
-	if (!texto)
+	while (texto)
 	{
-		printf("texto no asignado");
-		return (0);
+		if (!texto)
+		{
+			printf("texto no asignado");
+			return (0);
+		}
+		printf("%s\n", texto);
+		free(texto);
+		texto = get_next_line(fd);
 	}
-	printf("%s\n", texto);
-	free(texto);
-    texto = get_next_line(fd);
-	printf("%s\n", texto);
-	free(texto);
-    texto = get_next_line(fd);
-    printf("%s\n", texto);
     free(texto);
 
 	close(fd);
