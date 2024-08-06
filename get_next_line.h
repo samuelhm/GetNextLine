@@ -6,14 +6,16 @@
 /*   By: shurtado <shurtado@student.42barcelona.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 04:55:12 by shurtado          #+#    #+#             */
-/*   Updated: 2024/08/01 17:05:45 by shurtado         ###   ########.fr       */
+/*   Updated: 2024/08/06 16:30:43 by shurtado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFFER_SIZE 512
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 512
+# endif
 
 # include <stdlib.h>
 # include <stddef.h>
