@@ -2,7 +2,7 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 
-int main(int argc, char *argv[])
+int main()
 {
 	int fd = open("a.txt", O_RDONLY);
 	if (fd == -1)

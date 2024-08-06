@@ -1,6 +1,9 @@
 # Personales
 *.back
 *.swp
+main.c
+a.out
+a.txt
 # Prerequisites
 *.d
 
