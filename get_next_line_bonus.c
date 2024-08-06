@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shurtado <shurtado@student.42barcelona.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 04:55:46 by shurtado          #+#    #+#             */
-/*   Updated: 2024/08/01 17:01:46 by shurtado         ###   ########.fr       */
+/*   Updated: 2024/08/06 16:57:40 by shurtado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*read_line(int fd, char *buffer, char *save)
 {
@@ -74,20 +74,20 @@ static char	*get_line(char *save)
 
 char	*get_next_line(int fd)
 {
-	static char	*save;
+	static char	*save[FOPEN_MAX];
 	char		*line;
 	char		*buffer;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > FOPEN_MAX -1)
 		return (NULL);
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	save = read_line(fd, buffer, save);
+	save[fd] = read_line(fd, buffer, save[fd]);
 	free(buffer);
-	if (!save)
+	if (!save[fd])
 		return (NULL);
-	line = get_line(save);
-	save = get_save(save);
+	line = get_line(save[fd]);
+	save[fd] = get_save(save[fd]);
 	return (line);
 }
