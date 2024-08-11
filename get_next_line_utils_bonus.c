@@ -6,11 +6,11 @@
 /*   By: shurtado <shurtado@student.42barcelona.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 05:33:24 by shurtado          #+#    #+#             */
-/*   Updated: 2024/08/08 08:12:11 by shurtado         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:51:03 by shurtado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strchr(const char *s, int c)
 {
