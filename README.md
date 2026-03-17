@@ -1,90 +1,116 @@
 # Get Next Line
 
-[![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)](https://en.wikipedia.org/wiki/C_(programming_language))
-[![Status](https://img.shields.io/badge/Status-CompleREADME.md creado exitosamente. El archivo incluye:
+![C](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![42School](https://img.shields.io/badge/School-42_Barcelona-000000?style=for-the-badge&logo=42&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
-- **Badges**: Language (C), Status (Completed), 42 School, Norminette, y badges de habilidades (Memory Management, File Descriptors, Static Variables, Algorithm Design)
-- **Descripción**: Elevator pitch de2-3 líneas
-- **Características**: 6 puntos clave derivados del código
-- **Stack Tecnológico**: Tabla con tecnologías
-- **Decisiones Técnicas**: Párrafo profesional explicando la arquitectura basada en variables estáticasy el diseño
-- **Diagrama Mermaid**: Flowchart estrecho del flujo dela función
-- **Instalación**: Comandos secuenciales para clonar, compilar y usar
-- **Contacto**: Links a GitHub y LinkedIn
-.shields.io/badge/Concept-Static_Variables-9cf?style=flat-square)](https://en.wikipedia.org/wiki/Static_variable)
-[![Algorithm Design](https://img.shields.io/badge/Skill-Algorithm_Design-orange?style=flat-square)](https://en.wikipedia.org/wiki/Algorithm_design)
+![Memory Management](https://img.shields.io/badge/Skill-Memory_Management-blue?style=flat-square)
+![File Descriptors](https://img.shields.io/badge/Concept-File_Descriptors-green?style=flat-square)
+![Static Variables](https://img.shields.io/badge/Concept-Static_Variables-9cf?style=flat-square)
+![Algorithm Design](https://img.shields.io/badge/Skill-Algorithm_Design-orange?style=flat-square)
+![Critical Thinking](https://img.shields.io/badge/Soft_Skill-Critical_Thinking-purple?style=flat-square)
 
-## Descripción
+---
+
+## 📝 Descripción
 
 Implementación en C de una función que lee líneas completas desde un file descriptor, manejando eficientemente buffers de tamaño configurable. El proyecto demuestra dominio de memoria dinámica, variables estáticas y manipulación de strings a bajo nivel—habilidades fundamentales para el desarrollo de sistemas.
 
-## Características Principales
+---
 
-- Lectura eficiente línea por línea desde cualquier file descriptor
-- Gestión de memoria dinámica con liberación correcta de recursos
-- Soporte para BUFFERS de tamaño configurable (por defecto: 512 bytes)
-- **Versión Bonus**: Manejo concurrente de múltiples file descriptors
-- Implementación propia de funciones de utilidad (`ft_strlen`, `ft_strjoin`, `ft_strdup`, `ft_substr`, `ft_strchr`)
-- Manejo robusto de errores y casos edge (EOF, archivos vacíos, errores de lectura)
+## ✨ Características Principales
 
-## Stack Tecnológico
+- **Lectura línea a línea**: Devuelve cada línea completa incluyendo el carácter `\n` si existe
+- **Buffer configurable**: Tamaño de buffer definible en compilación mediante `BUFFER_SIZE`
+- **Gestión de memoria eficiente**: Libera automáticamente los recursos tras cada llamada
+- **Manejo robusto de errores**: Gestiona EOF, archivos vacíos y errores de lectura
+- **Multi-descriptor (Bonus)**: Soporte para leer simultáneamente de múltiples file descriptors
+- **Implementación sin dependencias externas**: Utiliza solo funciones de la biblioteca estándar de C
+
+---
+
+## 🛠 Stack Tecnológico
 
 | Categoría | Tecnología |
 |-----------|------------|
 | Lenguaje | C (C99) |
 | Compilación | GCC / Clang |
 | Sistema Operativo | Linux / macOS |
+| Librerías | `<stdlib.h>`, `<unistd.h>`, `<stddef.h>` |
 | Estilo de Código | Norminette 42 |
 
-## Decisiones Técnicas y Arquitectura
+---
 
-La arquitectura se basa en el uso estratégico de **variables estáticas** para preservar el estado del buffer entre llamadas consecutivas, permitiendo que la función retorne líneas completas incluso cuando el salto de línea no coincide con el límite del buffer. Esta decisión resuelve el desafío fundamental de alinear discontinuidades entre el tamaño del buffer y las líneas del archivo.
+## 🏗 Decisiones Técnicas / Arquitectura
 
-Se implementó una separación entre funciones de lectura (`read_line`) y extracción de líneas (`get_line`, `get_save`), aplicando el principio de responsabilidad única. La versión bonus extiende esta arquitectura utilizando un array estático de punteros indexado por file descriptor, permitiendo gestionar múltiples archivos abiertos simultáneamente sin interferencia entre estados.
+La función `get_next_line` resuelve el desafío de leer archivos de forma incremental sin cargar todo el contenido en memoria. Utiliza una **variable estática** para preservar el estado del buffer entre llamadas consecutivas, almacenando los caracteres que sobrepasan la línea actual hasta la siguiente invocación.
 
-El BUFFER_SIZE por defecto de 512 bytes equilibra el overhead de syscalls con el uso de memoria, siendo configurable en tiempo de compilación mediante `-D BUFFER_SIZE=n`.
+Esta arquitectura resuelve el problema fundamental de alinear discontinuidades entre el tamaño del buffer y las líneas del archivo. La separación entre funciones de lectura (`read_line`) y extracción (`get_line`, `get_save`) aplica el principio de responsabilidad única.
 
-## Diagrama de Flujo
+En la **versión bonus**, el diseño se extiende con un array de punteros estáticos indexados por file descriptor (`static char *save[FOPEN_MAX]`), permitiendo gestionar múltiples archivos abiertos simultáneamente sin interferencia entre ellos. El `BUFFER_SIZE` por defecto de 512 bytes equilibra el overhead de syscalls con el uso de memoria.
+
+---
+
+## 📊 Diagrama de Arquitectura
 
 ```mermaid
 flowchart TD
-    A[get_next_line fd] --> B{Validar fd y BUFFER_SIZE}
-    B -->|Inválido| C[return NULL]
-    B -->|Válido| D[Asignar buffer]
-    D --> E[read_line: Leer del fd]
-    E --> F{save contiene newline?}
-    F -->|No| G[read fd BUFFER_SIZE bytes]
-    G --> H{bytes_read > 0?}
-    H -->|Sí| I[Concatenar buffer a save]
-    I --> F
-    H -->|No - EOF| J[get_line: Extraer línea]
-    J --> K[get_save: Actualizar residual]
-    K --> L[return línea]
-    F -->|Sí| J
-    H -->|Error| M[free buffer y save]
-    M --> C
+    subgraph Init["Inicialización"]
+        A[get_next_line fd] --> B{fd válido y BUFFER_SIZE > 0?}
+        B -->|No| C[return NULL]
+        B -->|Sí| D[Reservar buffer temporal]
+    end
+
+    subgraph Reading["Lectura Iterativa"]
+        D --> E[read_line: leer del fd]
+        E --> F{¿newline en save?}
+        F -->|No| G[read fd: BUFFER_SIZE bytes]
+        G --> H{bytes_read > 0?}
+        H -->|Sí| I[strjoin: buffer + save]
+        I --> F
+        H -->|EOF o Error| J[Retornar save actual]
+        F -->|Sí| J
+    end
+
+    subgraph Extraction["Extracción de Línea"]
+        J --> K[get_line: extraer hasta newline]
+        K --> L[get_save: preservar restante]
+        L --> M[Liberar buffer temporal]
+        M --> N[return línea completa]
+    end
+
+    G -.->|"syscall read()"| O[(File Descriptor)]
+    O -.->|"bytes_read"| G
 ```
 
-## Instalación y Uso
+---
 
-### Clonar el repositorio
+## 🚀 Guía de Instalación
+
+### Prerrequisitos
+
+- GCC o Clang instalado
+- Sistema operativo UNIX/Linux/macOS
+
+### Instalación
 
 ```bash
+# Clonar el repositorio
 git clone https://github.com/samuelhm/GetNextLine.git
 cd GetNextLine
 ```
 
-### Compilar con tu programa
+### Compilación
 
 ```bash
-# Compilar versión mandatory
-gcc -Wall -Wextra -Werror get_next_line.c get_next_line_utils.c main.c -o program
+# Versión mandatory
+gcc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line.c get_next_line_utils.c -o gnl
 
-# Compilar versión bonus (múltiples fd)
-gcc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line_bonus.c get_next_line_utils_bonus.c main.c -o program_bonus
+# Versión bonus (multi-descriptor)
+gcc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line_bonus.c get_next_line_utils_bonus.c -o gnl_bonus
 ```
 
-### Ejemplo de uso
+### Ejemplo de Uso
 
 ```c
 #include "get_next_line.h"
@@ -93,13 +119,12 @@ gcc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line_bonus.c get_next_line_
 
 int main(void)
 {
-    int     fd;
-    char    *line;
+    int fd = open("archivo.txt", O_RDONLY);
+    char *line;
 
-    fd = open("archivo.txt", O_RDONLY);
     while ((line = get_next_line(fd)) != NULL)
     {
-        printf("%s\n", line);
+        printf("%s", line);
         free(line);
     }
     close(fd);
@@ -107,36 +132,29 @@ int main(void)
 }
 ```
 
-## Estructura del Proyecto
+---
+
+## 📁 Estructura del Proyecto
 
 ```
 GetNextLine/
-├── get_next_line.c           # Implementación mandatory
-├── get_next_line.h           # Header mandatory
-├── get_next_line_utils.c     # Utilidades mandatory
-├── get_next_line_bonus.c     # Implementación bonus (múltiples fd)
-├── get_next_line_bonus.h     # Header bonus
-├── get_next_line_utils_bonus.c # Utilidades bonus
-└── README.md
+├── get_next_line.c              # Implementación principal
+├── get_next_line.h              # Header principal
+├── get_next_line_utils.c        # Funciones auxiliares
+├── get_next_line_bonus.c        # Implementación multi-fd
+├── get_next_line_bonus.h        # Header versión bonus
+└── get_next_line_utils_bonus.c  # Utilidades versión bonus
 ```
 
-## Aprendizajes Clave
+---
 
-- Dominio de **variables estáticas** y su persistencia en el call stack
-- Gestión manual de memoria dinámica en C (`malloc`/`free`)
-- Manipulación de **file descriptors** y syscalls UNIX (`read`, `open`, `close`)
-- Diseño de algoritmos eficientes para buffering de E/S
-- Aplicación de buenas prácticas de manejo de errores
-- Cumplimiento de estándares de código (Norminette 42)
+## 📩 Contacto
+
+| Plataforma | Enlace |
+|------------|--------|
+| **GitHub** | [github.com/samuelhm](https://github.com/samuelhm/) |
+| **LinkedIn** | [linkedin.com/in/shurtado-m](https://www.linkedin.com/in/shurtado-m/) |
 
 ---
 
-## Contacto
-
-**Samuel Hurtado Martínez**
-
-[![GitHub](https://img.shields.io/badge/GitHub-samuelhm-181717?style=flat-square&logo=github)](https://github.com/samuelhm/)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-shurtado--m-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shurtado-m/)
-
----
-*Desarrollado como parte del currículo de 42 Barcelona*
+<p align="center"><i>Desarrollado como parte del currículum de 42 Barcelona</i></p>
